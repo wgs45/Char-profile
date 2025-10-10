@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
-
-let user: any = {
-  name: "Nagomi",
-  email: "nagomi_business@example.com",
-  interests: "Cosplay",
-};
+import { getDb } from "@/libs/mongodb";
 
 export async function GET() {
-  return NextResponse.json(user);
+  try {
+    const db = await getDb();
+    const user = await db.collection("users").findOne({ userid: 1 });
+
+    return NextResponse.json(user || {});
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { error: "Failed to fetch user" },
+      { status: 500 },
+    );
+  }
 }

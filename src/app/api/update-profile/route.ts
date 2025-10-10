@@ -1,13 +1,22 @@
 import { NextResponse } from "next/server";
-
-let user: any = {
-  name: "Anna Smith",
-  email: "anna.smith@example.com",
-  interests: "coding",
-};
+import { getDb } from "@/libs/mongodb";
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  user = { ...user, ...body }; // update fields
-  return NextResponse.json(user);
+  try {
+    const body = await req.json();
+    body.userid = 1;
+    const db = await getDb();
+
+    await db
+      .collection("users")
+      .updateOne({ userid: 1 }, { $set: body }, { upsert: true });
+
+    return NextResponse.json(body);
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { error: "Failed to update user" },
+      { status: 500 },
+    );
+  }
 }
