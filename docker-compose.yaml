@@ -1,18 +1,52 @@
 version: "3.9"
+
 services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - MONGO_URI=mongodb://admin:password@mongodb:27017
-    depends_on:
-      - mongodb
-  mongodb:
+  mongo:
     image: mongo:latest
-    restart: always
+    container_name: mongo
+    restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - demo-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
     ports:
-      - "27017:27017"
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: password
+    depends_on:
+      - mongo
+    networks:
+      - demo-network
+
+  char-profile:
+    build:
+      context: ./char-profile
+    container_name: char-profile
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://admin:password@mongo:27017/mydatabase?authSource=admin
+      - NODE_ENV=development
+    depends_on:
+      - mongo
+    networks:
+      - demo-network
+
+networks:
+  mongo-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

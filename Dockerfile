@@ -3,7 +3,7 @@ FROM node:lts-alpine
 WORKDIR /home/app
 
 COPY package.json pnpm-lock.yaml ./
-RUN npm i -g pnpm && pnpm i
+RUN npm i -g pnpm && pnpm i || true
 
 COPY . .
 
