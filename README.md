@@ -274,3 +274,11 @@ docker run -d \
   -e MONGO_URI="mongodb://admin:password@mongo:27017/mydatabase?authSource=admin" \
   char-profile
 ```
+
+---
+
+### 🔸 Build Project
+
+```bash
+docker build -t char-profile .
+```
