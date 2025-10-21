@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   mongo:
     image: mongo:latest
@@ -8,8 +6,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
-    volumes:
-      - mongo-data:/data/db
     networks:
       - demo-network
 
@@ -25,28 +21,19 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: password
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: password
-    depends_on:
-      - mongo
     networks:
       - demo-network
 
   char-profile:
-    build:
-      context: ./char-profile
+    image: char-profile
     container_name: char-profile
     ports:
       - "3000:3000"
     environment:
       - MONGO_URI=mongodb://admin:password@mongo:27017/mydatabase?authSource=admin
       - NODE_ENV=development
-    depends_on:
-      - mongo
     networks:
       - demo-network
 
 networks:
-  mongo-network:
-    driver: bridge
-
-volumes:
-  mongo-data:
+  demo-network:
