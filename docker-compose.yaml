@@ -8,6 +8,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
     networks:
       - demo-network
+    volumes:
+      - mongo-data:/data/db
 
   mongo-express:
     image: mongo-express:latest
@@ -37,3 +39,7 @@ services:
 
 networks:
   demo-network:
+
+volumes:
+  mongo-data:
+    driver: local
