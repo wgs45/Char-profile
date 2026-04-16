@@ -1,8 +1,8 @@
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGO_URI || "mongodb://admin:password@mongodb:27017";
+const uri = process.env.MONGO_URI;
 const options = {};
-const dbName = process.env.MONGO_DB_NAME || "my-db";
+const dbName = process.env.MONGO_DB_NAME;
 
 // use a global variable to preserve client across hot relaods in dev
 declare global {

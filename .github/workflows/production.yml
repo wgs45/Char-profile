@@ -1,0 +1,40 @@
+name: Next.js pnpm CI
+on: [push]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    # This spins up a temporary database on GitHub's server
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. Install pnpm first
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10 # Use your specific pnpm version
+
+      # 2. Setup Node.js with pnpm caching
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "25"
+          cache: "pnpm"
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: pnpm install
+
+      # 4. Build and Test
+      - name: Build Next.js
+        run: pnpm build
+        env:
+          # This tells your app to connect to the "Service" we started above
+          MONGODB_URI: mongodb://localhost:27017
