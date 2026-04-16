@@ -36,5 +36,6 @@ jobs:
       - name: Build Next.js
         run: pnpm build
         env:
-          # This tells your app to connect to the "Service" we started above
-          MONGODB_URI: mongodb://localhost:27017
+          # This tells app to connect to the "Service" we started above
+          MONGO_URI: mongodb://localhost:27017
+          MONGO_DB_NAME: "my-db"
